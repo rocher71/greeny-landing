@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef, useEffect } from "react";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 
 const scenes = [
   {
@@ -87,22 +87,37 @@ const scenes = [
 
 export default function ScrollShowcaseSection() {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end end"],
-  });
+  const progress = useMotionValue(0);
 
-  // Scene 0: hold until 30%, fade out by 42%
-  const scene0Opacity = useTransform(scrollYProgress, [0, 0.30, 0.42], [1, 1, 0]);
-  const scene0Y = useTransform(scrollYProgress, [0, 0.42], ["0%", "-8%"]);
+  // 직접 스크롤 이벤트로 progress 계산 (sticky + useScroll target 호환성 문제 회피)
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
 
-  // Scene 1: fade in 36-46%, hold until 62%, fade out by 72%
-  const scene1Opacity = useTransform(scrollYProgress, [0.36, 0.46, 0.62, 0.72], [0, 1, 1, 0]);
-  const scene1Y = useTransform(scrollYProgress, [0.36, 0.72], ["6%", "-6%"]);
+    const onScroll = () => {
+      const rect = el.getBoundingClientRect();
+      const scrolled = -rect.top;
+      const total = el.offsetHeight - window.innerHeight;
+      if (total <= 0) return;
+      progress.set(Math.max(0, Math.min(1, scrolled / total)));
+    };
 
-  // Scene 2: fade in 66-76%, hold to end
-  const scene2Opacity = useTransform(scrollYProgress, [0.66, 0.76, 1], [0, 1, 1]);
-  const scene2Y = useTransform(scrollYProgress, [0.66, 1], ["6%", "0%"]);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [progress]);
+
+  // Scene 0: 0 ~ 0.30 유지, 0.30 ~ 0.42 페이드아웃
+  const scene0Opacity = useTransform(progress, [0, 0.30, 0.42], [1, 1, 0]);
+  const scene0Y      = useTransform(progress, [0, 0.42], ["0%", "-8%"]);
+
+  // Scene 1: 0.36 ~ 0.46 페이드인, 0.46 ~ 0.62 유지, 0.62 ~ 0.72 페이드아웃
+  const scene1Opacity = useTransform(progress, [0.36, 0.46, 0.62, 0.72], [0, 1, 1, 0]);
+  const scene1Y       = useTransform(progress, [0.36, 0.72], ["6%", "-6%"]);
+
+  // Scene 2: 0.66 ~ 0.76 페이드인, 이후 유지
+  const scene2Opacity = useTransform(progress, [0.66, 0.76, 1], [0, 1, 1]);
+  const scene2Y       = useTransform(progress, [0.66, 1], ["6%", "0%"]);
 
   const sceneAnimations = [
     { opacity: scene0Opacity, y: scene0Y },
@@ -110,11 +125,10 @@ export default function ScrollShowcaseSection() {
     { opacity: scene2Opacity, y: scene2Y },
   ];
 
-  const progressDots = [
-    useTransform(scrollYProgress, [0, 0.30, 0.42], [1, 1, 0.3]),
-    useTransform(scrollYProgress, [0.36, 0.46, 0.62, 0.72], [0.3, 1, 1, 0.3]),
-    useTransform(scrollYProgress, [0.66, 0.76], [0.3, 1]),
-  ];
+  const dot0 = useTransform(progress, [0, 0.30, 0.42], [1, 1, 0.3]);
+  const dot1 = useTransform(progress, [0.36, 0.46, 0.62, 0.72], [0.3, 1, 1, 0.3]);
+  const dot2 = useTransform(progress, [0.66, 0.76], [0.3, 1]);
+  const progressDots = [dot0, dot1, dot2];
 
   return (
     <div ref={ref} className="relative h-[360vh]">
@@ -126,9 +140,8 @@ export default function ScrollShowcaseSection() {
             className={`absolute inset-0 flex items-center justify-center bg-gradient-to-br ${scene.bg} px-4`}
           >
             <div className="w-full max-w-4xl">
-              {/* Mobile: stack vertically, Desktop: side by side */}
               <div className="flex flex-col items-center gap-8 md:flex-row md:items-center md:gap-16">
-                {/* Text */}
+                {/* 텍스트 */}
                 <div className="flex-1 text-center md:text-left">
                   <span
                     className="mb-4 inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest text-white"
@@ -144,7 +157,7 @@ export default function ScrollShowcaseSection() {
                   </p>
                 </div>
 
-                {/* Preview card */}
+                {/* 프리뷰 카드 */}
                 <div className="w-full max-w-[280px] flex-shrink-0 rounded-3xl bg-white/80 p-5 shadow-xl backdrop-blur-sm sm:max-w-[320px]">
                   {scene.preview}
                 </div>
@@ -153,7 +166,7 @@ export default function ScrollShowcaseSection() {
           </motion.div>
         ))}
 
-        {/* Progress dots */}
+        {/* 진행 도트 */}
         <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 gap-2">
           {progressDots.map((dotOpacity, i) => (
             <motion.div
