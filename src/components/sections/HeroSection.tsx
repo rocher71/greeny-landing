@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { openDownloadModal } from "@/components/DownloadModal";
+import { trackDownloadClick } from "@/lib/ga";
 
 const leaves = [
   { emoji: "🌿", x: "8%", y: "15%", size: 40, duration: 4, delay: 0 },
@@ -112,7 +113,7 @@ export default function HeroSection() {
           className="flex flex-col items-center gap-4"
         >
           <motion.button
-            onClick={openDownloadModal}
+            onClick={() => { trackDownloadClick("hero"); openDownloadModal(); }}
             whileTap={{ scale: 0.96 }}
             className="flex cursor-pointer items-center gap-2.5 rounded-full bg-[#1A3C34] px-8 py-4 text-base font-bold text-white shadow-lg transition hover:bg-[#0f2620]"
           >

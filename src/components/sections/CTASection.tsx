@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { openDownloadModal } from "@/components/DownloadModal";
+import { trackDownloadClick } from "@/lib/ga";
 
 export default function CTASection() {
   const ref = useRef(null);
@@ -29,7 +30,7 @@ export default function CTASection() {
 
           <div className="flex flex-col items-center gap-4">
             <motion.button
-              onClick={openDownloadModal}
+              onClick={() => { trackDownloadClick("cta_section"); openDownloadModal(); }}
               whileTap={{ scale: 0.96 }}
               className="flex cursor-pointer items-center gap-2.5 rounded-full bg-white px-10 py-4 text-lg font-bold text-[#1A3C34] shadow-lg transition hover:bg-[#f0fdf4]"
             >

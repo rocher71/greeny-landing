@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { addToWaitlist } from "@/app/actions/waitlist";
+import { trackWaitlistSignup } from "@/lib/ga";
 
 export default function WaitlistForm({ size = "default" }: { size?: "default" | "large" }) {
   const [email, setEmail] = useState("");
@@ -19,6 +20,7 @@ export default function WaitlistForm({ size = "default" }: { size?: "default" | 
     if (result.success) {
       setDone(true);
       setEmail("");
+      trackWaitlistSignup("hero_form", "email");
       toast.success(result.message);
     } else {
       toast.error(result.message);

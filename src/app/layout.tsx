@@ -11,7 +11,11 @@ const notoSansKR = Noto_Sans_KR({
   weight: ["400", "500", "700", "900"],
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://greeny-landing.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "그리니 — 말 걸어주는 식물 친구",
   description:
     "대화를 나눌수록 자라나는 나만의 식물 친구, 그리니. 사전예약하고 출시 알림을 가장 먼저 받아보세요.",
@@ -20,6 +24,15 @@ export const metadata: Metadata = {
     description:
       "대화를 나눌수록 자라나는 나만의 식물 친구, 그리니. 사전예약하고 출시 알림을 가장 먼저 받아보세요.",
     type: "website",
+    url: siteUrl,
+    siteName: "그리니",
+    locale: "ko_KR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "그리니 — 말 걸어주는 식물 친구",
+    description:
+      "대화를 나눌수록 자라나는 나만의 식물 친구, 그리니. 사전예약하고 출시 알림을 가장 먼저 받아보세요.",
   },
 };
 
