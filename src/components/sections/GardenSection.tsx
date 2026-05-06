@@ -10,20 +10,6 @@ const plants = [
   { emoji: "🌸", name: "벚꽃나무", trait: "감성적이고 낭만", level: 3, color: "#ec4899" },
 ];
 
-const pots = [
-  { emoji: "🪣", label: "테라코타" },
-  { emoji: "⚪", label: "화이트 미니멀" },
-  { emoji: "🟤", label: "우드 빈티지" },
-  { emoji: "🔵", label: "블루 세라믹" },
-];
-
-const decorations = [
-  { emoji: "🪨", label: "돌멩이" },
-  { emoji: "🍄", label: "버섯" },
-  { emoji: "🌈", label: "무지개" },
-  { emoji: "⭐", label: "별" },
-];
-
 export default function GardenSection() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
@@ -45,7 +31,9 @@ export default function GardenSection() {
             내 텃밭을 꾸며요! 🌿
           </h2>
           <p className="mx-auto max-w-sm text-sm leading-relaxed text-[#5a7a6e] sm:text-base">
-            최대 3개의 식물을 키우고, 화분과 장식으로 나만의 텃밭을 만들어보세요.
+            최대 3개의 식물을 키우며 각자의 인격을 키워나가요.
+            <br />
+            대화가 쌓일수록 나만의 특별한 식물 친구가 됩니다.
           </p>
         </motion.div>
 
@@ -54,107 +42,66 @@ export default function GardenSection() {
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.15 }}
-          className="mb-10 rounded-3xl bg-white p-5 shadow-lg sm:p-8"
+          className="rounded-3xl bg-white p-6 shadow-lg sm:p-10"
         >
-          {/* Ground */}
-          <div className="mb-6 flex items-end justify-center gap-4 sm:gap-8">
+          {/* Plants */}
+          <div className="mb-8 flex items-end justify-center gap-6 sm:gap-12">
             {plants.map((plant, i) => (
               <motion.div
                 key={plant.name}
                 initial={{ opacity: 0, y: 30 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0.3 + i * 0.12 }}
-                whileHover={{ y: -6, scale: 1.04 }}
-                className="flex cursor-pointer flex-col items-center gap-2"
+                whileHover={{ y: -8, scale: 1.06 }}
+                className="flex cursor-default flex-col items-center gap-2"
               >
-                {/* Level badge */}
                 <span
-                  className="rounded-full px-2 py-0.5 text-[10px] font-bold text-white"
+                  className="rounded-full px-2.5 py-0.5 text-[10px] font-bold text-white"
                   style={{ background: plant.color }}
                 >
                   Lv.{plant.level}
                 </span>
-
-                {/* Plant */}
                 <div
                   className="flex items-center justify-center rounded-2xl border-2 bg-[#F0FFF4]"
                   style={{
                     borderColor: plant.color + "40",
-                    width: i === 1 ? 80 : 68,
-                    height: i === 1 ? 80 : 68,
-                    fontSize: i === 1 ? 44 : 36,
+                    width: i === 1 ? 88 : 72,
+                    height: i === 1 ? 88 : 72,
+                    fontSize: i === 1 ? 48 : 38,
                   }}
                 >
                   {plant.emoji}
                 </div>
-
-                {/* Name */}
-                <span className="text-xs font-semibold text-[#1A3C34]">{plant.name}</span>
+                <span className="text-xs font-bold text-[#1A3C34]">{plant.name}</span>
                 <span className="text-[10px] text-[#5a7a6e]">{plant.trait}</span>
               </motion.div>
             ))}
           </div>
 
           {/* Ground strip */}
-          <div className="mx-auto h-3 max-w-xs rounded-full bg-gradient-to-r from-[#c6e8d5] via-[#52B788] to-[#c6e8d5] opacity-40" />
+          <div className="mx-auto mb-6 h-3 max-w-xs rounded-full bg-gradient-to-r from-[#c6e8d5] via-[#52B788] to-[#c6e8d5] opacity-40" />
+
+          {/* Stats row */}
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { emoji: "💬", label: "누적 대화", value: "1,240개" },
+              { emoji: "🌱", label: "함께한 날", value: "38일" },
+              { emoji: "✨", label: "형성된 인격", value: "3가지" },
+            ].map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 10 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.4, delay: 0.55 + i * 0.1 }}
+                className="rounded-2xl bg-[#F0FFF4] py-3 text-center"
+              >
+                <div className="text-xl">{stat.emoji}</div>
+                <div className="mt-1 text-sm font-black text-[#1A3C34]">{stat.value}</div>
+                <div className="text-[10px] text-[#5a7a6e]">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
         </motion.div>
-
-        {/* Customization options */}
-        <div className="grid gap-5 sm:grid-cols-2">
-          {/* Pot skins */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="rounded-2xl bg-white p-5 shadow-sm"
-          >
-            <p className="mb-3 text-sm font-bold text-[#1A3C34]">🪴 화분 스킨</p>
-            <div className="grid grid-cols-4 gap-2">
-              {pots.map((pot, i) => (
-                <motion.div
-                  key={pot.label}
-                  whileTap={{ scale: 0.92 }}
-                  className={`flex flex-col items-center gap-1 rounded-xl py-2 ${i === 0 ? "bg-[#e8f5e9] ring-2 ring-[#52B788]" : "bg-[#F0FFF4]"}`}
-                >
-                  <span className="text-xl">{pot.emoji}</span>
-                  <span className="text-[9px] text-[#5a7a6e] leading-tight text-center">{pot.label}</span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Decorations */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="rounded-2xl bg-white p-5 shadow-sm"
-          >
-            <p className="mb-3 text-sm font-bold text-[#1A3C34]">✨ 텃밭 장식</p>
-            <div className="grid grid-cols-4 gap-2">
-              {decorations.map((deco, i) => (
-                <motion.div
-                  key={deco.label}
-                  whileTap={{ scale: 0.92 }}
-                  className={`flex flex-col items-center gap-1 rounded-xl py-2 ${i === 0 ? "bg-[#e8f5e9] ring-2 ring-[#52B788]" : "bg-[#F0FFF4]"}`}
-                >
-                  <span className="text-xl">{deco.emoji}</span>
-                  <span className="text-[9px] text-[#5a7a6e] leading-tight text-center">{deco.label}</span>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Coming soon badge */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5, delay: 0.7 }}
-          className="mt-6 text-center text-xs text-[#5a7a6e]"
-        >
-          🔜 화분 스킨 · 배경 테마 · 친구 텃밭 방문 기능도 준비 중이에요
-        </motion.p>
       </div>
     </section>
   );
