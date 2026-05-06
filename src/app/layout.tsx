@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_KR } from "next/font/google";
 import { Toaster } from "react-hot-toast";
+import DownloadModal from "@/components/DownloadModal";
 import "./globals.css";
 
 const notoSansKR = Noto_Sans_KR({
@@ -30,6 +31,7 @@ export default function RootLayout({
     <html lang="ko" className={`${notoSansKR.variable} antialiased`}>
       <body className="min-h-screen bg-background text-foreground">
         {children}
+        <DownloadModal />
         <Toaster
           position="bottom-center"
           toastOptions={{
