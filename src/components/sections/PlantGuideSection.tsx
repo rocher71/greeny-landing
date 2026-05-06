@@ -174,18 +174,19 @@ function IOSDevice({ children, scale = 1 }: { children: React.ReactNode; scale?:
 }
 
 // ─── Screen 1: Library ────────────────────────────────────────
+const U = "https://images.unsplash.com";
+function img(id: string, w: number, h: number) {
+  return `${U}/${id}?w=${w}&h=${h}&fit=crop&q=80`;
+}
+
 function LibraryScreen() {
-  const cats = [
-    { label: "전체", count: 124 }, { label: "관엽", count: 48 },
-    { label: "다육", count: 32 }, { label: "꽃식물", count: 26 }, { label: "허브", count: 18 },
-  ];
   const plants = [
-    { name: "몬스테라", sci: "Monstera deliciosa", diffLabel: "쉬움", badge: P.badgeEasy, water: "주 1회", light: "반음지", faved: true },
-    { name: "스투키", sci: "Sansevieria stuckyi", diffLabel: "매우 쉬움", badge: P.badgeEasy, water: "2주 1회", light: "음지·양지", faved: false },
-    { name: "선인장", sci: "Echinocactus grusonii", diffLabel: "매우 쉬움", badge: P.badgeEasy, water: "월 1회", light: "직사광", faved: false },
-    { name: "호접란", sci: "Phalaenopsis", diffLabel: "보통", badge: P.badgeMed, water: "주 1회", light: "반음지", faved: true },
-    { name: "필로덴드론", sci: "Philodendron hederaceum", diffLabel: "쉬움", badge: P.badgeEasy, water: "주 1회", light: "반음지", faved: false },
-    { name: "아레카야자", sci: "Dypsis lutescens", diffLabel: "보통", badge: P.badgeMed, water: "주 2회", light: "밝은 곳", faved: false },
+    { name: "몬스테라", sci: "Monstera deliciosa", diffLabel: "쉬움", badge: P.badgeEasy, water: "주 1회", light: "반음지", faved: true, src: img("photo-1614594975525-e45190c55d0b", 112, 112) },
+    { name: "스투키", sci: "Sansevieria stuckyi", diffLabel: "매우 쉬움", badge: P.badgeEasy, water: "2주 1회", light: "음지·양지", faved: false, src: img("photo-1596547609652-9cf5d8d76921", 112, 112) },
+    { name: "선인장", sci: "Echinocactus grusonii", diffLabel: "매우 쉬움", badge: P.badgeEasy, water: "월 1회", light: "직사광", faved: false, src: img("photo-1509587584298-0f3b3a3a1797", 112, 112) },
+    { name: "호접란", sci: "Phalaenopsis", diffLabel: "보통", badge: P.badgeMed, water: "주 1회", light: "반음지", faved: true, src: img("photo-1589244159943-460088ed5c92", 112, 112) },
+    { name: "필로덴드론", sci: "Philodendron hederaceum", diffLabel: "쉬움", badge: P.badgeEasy, water: "주 1회", light: "반음지", faved: false, src: img("photo-1598880940080-ff9a29891b85", 112, 112) },
+    { name: "아레카야자", sci: "Dypsis lutescens", diffLabel: "보통", badge: P.badgeMed, water: "주 2회", light: "밝은 곳", faved: false, src: img("photo-1485955900006-10f4d324d411", 112, 112) },
   ];
 
   return (
@@ -213,16 +214,6 @@ function LibraryScreen() {
         </div>
       </div>
 
-      {/* Category chips */}
-      <div style={{ padding: "14px 20px 4px", display: "flex", gap: 8, overflowX: "auto" }}>
-        {cats.map((c, i) => (
-          <div key={c.label} style={{ padding: "8px 14px", borderRadius: 999, background: i === 0 ? P.primary : "#fff", border: i === 0 ? "none" : `1px solid ${P.border}`, fontSize: 13, fontWeight: 600, color: i === 0 ? "#fff" : P.textSec, display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-            {c.label}
-            <span style={{ fontSize: 11, fontWeight: 600, color: i === 0 ? "rgba(255,255,255,0.85)" : P.textTer }}>{c.count}</span>
-          </div>
-        ))}
-      </div>
-
       {/* Featured banner */}
       <div style={{ padding: "12px 20px 0" }}>
         <div style={{ borderRadius: 18, padding: 14, display: "flex", gap: 12, background: `linear-gradient(135deg,${P.primarySoft} 0%,${P.primaryTint} 100%)`, border: `1px solid ${P.border}`, alignItems: "center" }}>
@@ -231,7 +222,7 @@ function LibraryScreen() {
             <div style={{ fontSize: 15, fontWeight: 700, marginTop: 3, color: P.text }}>초보자에게 딱 맞는 5종</div>
             <div style={{ fontSize: 12, color: P.textSec, marginTop: 3, lineHeight: "17px" }}>과습에 강하고 키우기 쉬운 식물</div>
           </div>
-          <Photo label="식물 일러스트" w={64} h={64} radius={14} />
+          <img src={img("photo-1501004318641-b39e6451bec6", 128, 128)} alt="식물" style={{ width: 64, height: 64, borderRadius: 14, objectFit: "cover", flexShrink: 0 }} />
         </div>
       </div>
 
@@ -245,7 +236,7 @@ function LibraryScreen() {
       <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 8, paddingBottom: 100, overflowY: "auto" }}>
         {plants.map((plant) => (
           <div key={plant.name} style={{ background: P.card, borderRadius: 16, border: `1px solid ${P.border}`, padding: 12, display: "flex", gap: 12, alignItems: "center", boxShadow: "0 1px 2px rgba(20,40,30,0.04)" }}>
-            <Photo label={plant.name} w={56} h={56} radius={12} />
+            <img src={plant.src} alt={plant.name} style={{ width: 56, height: 56, borderRadius: 12, objectFit: "cover", flexShrink: 0 }} />
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <div style={{ fontSize: 15, fontWeight: 600, letterSpacing: -0.2 }}>{plant.name}</div>
@@ -282,7 +273,7 @@ function DetailScreen() {
     <div style={{ width: "100%", height: "100%", background: P.bg, display: "flex", flexDirection: "column", fontFamily: '-apple-system,"SF Pro Text",system-ui', color: P.text, position: "relative", overflow: "hidden" }}>
       {/* Hero photo */}
       <div style={{ position: "relative", height: 320, flexShrink: 0 }}>
-        <Photo label="MONSTERA · HERO PHOTO" w="100%" h="100%" radius={0} />
+        <img src={img("photo-1614594975525-e45190c55d0b", 720, 640)} alt="몬스테라" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
         {/* Action buttons */}
         <div style={{ position: "absolute", top: 56, left: 0, right: 0, padding: "0 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ width: 38, height: 38, borderRadius: 19, background: "rgba(255,255,255,0.85)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
