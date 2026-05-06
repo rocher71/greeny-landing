@@ -1,8 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 // ─── Design tokens (mint palette) ───────────────────────────
 const P = {
@@ -407,9 +407,13 @@ const PLANTS = [
 export default function PlantGuideSection() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const [expanded, setExpanded] = useState(false);
 
   // Scale: fit phones in landing page layout
   const SCALE = 0.82;
+
+  const INITIAL_COUNT = 4;
+  const visiblePlants = expanded ? PLANTS : PLANTS.slice(0, INITIAL_COUNT);
 
   return (
     <section ref={ref} className="bg-[#F0FFF4] px-4 py-20 sm:px-6 sm:py-24 overflow-hidden">
@@ -455,29 +459,52 @@ export default function PlantGuideSection() {
         <motion.p initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.4, delay: 0.4 }} className="mb-6 text-center text-sm font-semibold text-[#1A3C34]">수록 식물 미리보기 · 출시 시 100여 종 전체 공개</motion.p>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {PLANTS.map((plant, i) => (
-            <motion.div key={plant.name} initial={{ opacity: 0, y: 16 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.4, delay: 0.4 + (i % 3) * 0.07 }} className="rounded-2xl bg-white p-5 shadow-sm">
-              <div className="mb-3 flex items-center gap-3">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#F0FFF4] text-2xl">{plant.emoji}</div>
-                <div className="min-w-0">
-                  <p className="font-bold text-[#1A3C34]">{plant.name}</p>
-                  <p className="truncate text-[11px] italic text-[#5a7a6e]">{plant.scientific}</p>
+          <AnimatePresence initial={false}>
+            {visiblePlants.map((plant, i) => (
+              <motion.div
+                key={plant.name}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.35, delay: i >= INITIAL_COUNT ? (i - INITIAL_COUNT) * 0.06 : 0.4 + (i % 3) * 0.07 }}
+                className="rounded-2xl bg-white p-5 shadow-sm"
+              >
+                <div className="mb-3 flex items-center gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#F0FFF4] text-2xl">{plant.emoji}</div>
+                  <div className="min-w-0">
+                    <p className="font-bold text-[#1A3C34]">{plant.name}</p>
+                    <p className="truncate text-[11px] italic text-[#5a7a6e]">{plant.scientific}</p>
+                  </div>
+                  <span className="ml-auto shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-bold" style={{ background: plant.diffStyle.bg, color: plant.diffStyle.fg }}>{plant.difficulty}</span>
                 </div>
-                <span className="ml-auto shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-bold" style={{ background: plant.diffStyle.bg, color: plant.diffStyle.fg }}>{plant.difficulty}</span>
-              </div>
-              <p className="mb-3 text-sm leading-relaxed text-[#5a7a6e]">{plant.desc}</p>
-              <div className="flex gap-2">
-                <span className="flex items-center gap-1 rounded-full bg-[#F0FFF4] px-2.5 py-1 text-[11px] text-[#5a7a6e]">💧 {plant.water}</span>
-                <span className="flex items-center gap-1 rounded-full bg-[#F0FFF4] px-2.5 py-1 text-[11px] text-[#5a7a6e]">☀️ {plant.light}</span>
-              </div>
-            </motion.div>
-          ))}
+                <p className="mb-3 text-sm leading-relaxed text-[#5a7a6e]">{plant.desc}</p>
+                <div className="flex gap-2">
+                  <span className="flex items-center gap-1 rounded-full bg-[#F0FFF4] px-2.5 py-1 text-[11px] text-[#5a7a6e]">💧 {plant.water}</span>
+                  <span className="flex items-center gap-1 rounded-full bg-[#F0FFF4] px-2.5 py-1 text-[11px] text-[#5a7a6e]">☀️ {plant.light}</span>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
 
-        <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.4, delay: 0.6 }} className="mt-8 flex items-center gap-3">
-          <div className="h-px flex-1 bg-[#c6e8d5]" />
-          <span className="rounded-full border border-[#c6e8d5] px-4 py-1.5 text-sm text-[#5a7a6e]">+ 88종 더 준비 중 🌿</span>
-          <div className="h-px flex-1 bg-[#c6e8d5]" />
+        {/* 더 보기 / 접기 버튼 */}
+        <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.4, delay: 0.5 }} className="mt-6 flex flex-col items-center gap-4">
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="flex cursor-pointer items-center gap-2 rounded-full border border-[#52B788] px-6 py-3 text-sm font-semibold text-[#52B788] transition hover:bg-[#52B788] hover:text-white"
+          >
+            {expanded ? (
+              <><span>접기</span><span>↑</span></>
+            ) : (
+              <><span>🌿 식물 더 보기</span><span className="rounded-full bg-[#52B788] px-2 py-0.5 text-[11px] text-white">+{PLANTS.length - INITIAL_COUNT}종</span></>
+            )}
+          </button>
+
+          <div className="flex w-full items-center gap-3">
+            <div className="h-px flex-1 bg-[#c6e8d5]" />
+            <span className="rounded-full border border-[#c6e8d5] px-4 py-1.5 text-sm text-[#5a7a6e]">+ 88종 더 준비 중 🌿</span>
+            <div className="h-px flex-1 bg-[#c6e8d5]" />
+          </div>
         </motion.div>
       </div>
     </section>

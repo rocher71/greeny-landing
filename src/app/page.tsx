@@ -14,12 +14,12 @@ export default function Home() {
   return (
     <>
       <HeroSection />
-      <PainSection />
       <ScrollShowcaseSection />
       <ChatDemoSection />
       <GardenSection />
-      <FeaturesSection />
       <PlantGuideSection />
+      <FeaturesSection />
+      <PainSection />
       <HowItWorksSection />
       <CTASection />
       <Footer />
