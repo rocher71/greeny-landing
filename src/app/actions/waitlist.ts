@@ -3,21 +3,27 @@
 import { headers } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase";
 
+export type WaitlistErrorCode =
+  | "INVALID_EMAIL"
+  | "INVALID_PHONE"
+  | "DUPLICATE_CONTACT"
+  | "SERVER_ERROR";
+
 export async function addToWaitlist(
   contact: string,
   contactType: "email" | "phone" = "email",
   marketingAgreed = false
-): Promise<{ success: boolean; message: string }> {
+): Promise<{ success: true } | { success: false; code: WaitlistErrorCode }> {
   const value = contact.trim();
 
   if (contactType === "email") {
     if (!value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      return { success: false, message: "올바른 이메일 주소를 입력해주세요." };
+      return { success: false, code: "INVALID_EMAIL" };
     }
   } else {
     const digits = value.replace(/[^0-9]/g, "");
     if (!digits || !/^01[016789]\d{7,8}$/.test(digits)) {
-      return { success: false, message: "올바른 전화번호를 입력해주세요." };
+      return { success: false, code: "INVALID_PHONE" };
     }
   }
 
@@ -35,10 +41,10 @@ export async function addToWaitlist(
 
   if (error) {
     if (error.code === "23505") {
-      return { success: false, message: "이미 등록된 연락처예요! 출시 시 알려드릴게요 :)" };
+      return { success: false, code: "DUPLICATE_CONTACT" };
     }
-    return { success: false, message: "잠시 후 다시 시도해주세요." };
+    return { success: false, code: "SERVER_ERROR" };
   }
 
-  return { success: true, message: "신청 완료! 출시 소식을 가장 먼저 알려드릴게요 🌱" };
+  return { success: true };
 }

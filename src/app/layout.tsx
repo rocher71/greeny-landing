@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Noto_Sans_KR } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import Script from "next/script";
+import { cookies } from "next/headers";
 import DownloadModal from "@/components/DownloadModal";
+import { getTranslations, toLocale } from "@/lib/i18n";
 import "./globals.css";
 
 const notoSansKR = Noto_Sans_KR({
@@ -14,38 +16,44 @@ const notoSansKR = Noto_Sans_KR({
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://greeny-landing.vercel.app";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: "그리니 — 말 걸어주는 식물 친구",
-  description:
-    "대화를 나눌수록 자라나는 나만의 식물 친구, 그리니. 사전예약하고 출시 알림을 가장 먼저 받아보세요.",
-  openGraph: {
-    title: "그리니 — 말 걸어주는 식물 친구",
-    description:
-      "대화를 나눌수록 자라나는 나만의 식물 친구, 그리니. 사전예약하고 출시 알림을 가장 먼저 받아보세요.",
-    type: "website",
-    url: siteUrl,
-    siteName: "그리니",
-    locale: "ko_KR",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "그리니 — 말 걸어주는 식물 친구",
-    description:
-      "대화를 나눌수록 자라나는 나만의 식물 친구, 그리니. 사전예약하고 출시 알림을 가장 먼저 받아보세요.",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const cookieStore = await cookies();
+  const locale = toLocale(cookieStore.get("greeny-locale")?.value);
+  const t = getTranslations(locale).meta;
 
-export default function RootLayout({
+  return {
+    metadataBase: new URL(siteUrl),
+    title: t.title,
+    description: t.description,
+    openGraph: {
+      title: t.title,
+      description: t.description,
+      type: "website",
+      url: siteUrl,
+      siteName: t.siteName,
+      locale: locale === "ko" ? "ko_KR" : "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t.title,
+      description: t.description,
+    },
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const locale = toLocale(cookieStore.get("greeny-locale")?.value);
+
   return (
-    <html lang="ko" className={`${notoSansKR.variable} antialiased`}>
+    <html lang={locale} className={`${notoSansKR.variable} antialiased`}>
       <body className="min-h-screen bg-background text-foreground">
         {children}
-        <DownloadModal />
+        <DownloadModal locale={locale} />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-QLNTJX18MD"
           strategy="afterInteractive"

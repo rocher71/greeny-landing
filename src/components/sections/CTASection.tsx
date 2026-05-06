@@ -5,10 +5,12 @@ import { useInView } from "framer-motion";
 import { useRef } from "react";
 import { openDownloadModal } from "@/components/DownloadModal";
 import { trackDownloadClick } from "@/lib/ga";
+import { getTranslations, type Locale } from "@/lib/i18n";
 
-export default function CTASection() {
+export default function CTASection({ locale }: { locale: Locale }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const t = getTranslations(locale).cta;
 
   return (
     <section ref={ref} id="cta" className="bg-[#52B788] px-4 py-20 text-white sm:px-6 sm:py-28">
@@ -20,12 +22,10 @@ export default function CTASection() {
         >
           <div className="mb-6 text-6xl">🌱</div>
           <h2 className="mb-4 text-3xl font-black sm:text-4xl md:text-5xl">
-            지금 바로 시작해보세요
+            {t.headline}
           </h2>
-          <p className="mb-10 text-lg leading-relaxed text-white/80">
-            나만의 식물 친구를 만들어보세요.
-            <br />
-            매일 말을 걸어주는 그리니가 기다리고 있어요.
+          <p className="mb-10 whitespace-pre-line text-lg leading-relaxed text-white/80">
+            {t.subtext}
           </p>
 
           <div className="flex flex-col items-center gap-4">
@@ -35,7 +35,7 @@ export default function CTASection() {
               className="flex cursor-pointer items-center gap-2.5 rounded-full bg-white px-10 py-4 text-lg font-bold text-[#1A3C34] shadow-lg transition hover:bg-[#f0fdf4]"
             >
               <span className="text-2xl">🪴</span>
-              앱 다운받기
+              {t.button}
             </motion.button>
 
             <div className="flex items-center gap-4 text-sm text-white/70">

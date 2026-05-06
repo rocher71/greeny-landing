@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { openDownloadModal } from "@/components/DownloadModal";
 import { trackDownloadClick } from "@/lib/ga";
+import { getTranslations, type Locale } from "@/lib/i18n";
 
-export default function FloatingCTA() {
+export default function FloatingCTA({ locale }: { locale: Locale }) {
   const [visible, setVisible] = useState(false);
+  const t = getTranslations(locale).floatingCta;
 
   useEffect(() => {
     const hero = document.getElementById("hero");
@@ -31,7 +33,7 @@ export default function FloatingCTA() {
           className="fixed bottom-6 right-6 z-40 flex cursor-pointer items-center gap-2 rounded-full bg-[#1A3C34] px-5 py-3 font-semibold text-white shadow-lg transition hover:bg-[#0f2620]"
         >
           <span>🪴</span>
-          <span>앱 다운받기</span>
+          <span>{t.button}</span>
         </motion.button>
       )}
     </AnimatePresence>

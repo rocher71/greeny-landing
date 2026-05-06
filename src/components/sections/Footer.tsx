@@ -1,15 +1,16 @@
-export default function Footer() {
+import LocaleToggle from "@/components/LocaleToggle";
+import type { Locale } from "@/lib/i18n";
+
+export default function Footer({ locale }: { locale: Locale }) {
   return (
     <footer className="bg-[#1A3C34] px-6 py-12 text-white">
       <div className="mx-auto max-w-4xl">
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
-          {/* Logo */}
           <div className="flex items-center gap-2">
             <span className="text-2xl">🪴</span>
             <span className="text-xl font-black text-[#52B788]">greeny</span>
           </div>
 
-          {/* SNS */}
           <div className="flex items-center gap-6">
             <a
               href="https://instagram.com/greeny.app"
@@ -35,6 +36,7 @@ export default function Footer() {
             >
               X (Twitter)
             </a>
+            <LocaleToggle current={locale} />
           </div>
         </div>
 

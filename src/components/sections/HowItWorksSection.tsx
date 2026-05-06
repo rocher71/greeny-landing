@@ -3,10 +3,12 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
+import { getTranslations, type Locale } from "@/lib/i18n";
 
-export default function HowItWorksSection() {
+export default function HowItWorksSection({ locale }: { locale: Locale }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const t = getTranslations(locale).howItWorks;
 
   return (
     <section ref={ref} className="bg-white px-4 py-20 sm:px-6">
@@ -17,19 +19,16 @@ export default function HowItWorksSection() {
           transition={{ duration: 0.6 }}
         >
           <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#52B788] sm:text-sm">
-            시작하는 방법
+            {t.sectionLabel}
           </p>
           <h2 className="mb-6 text-3xl font-black text-[#1A3C34] sm:text-4xl">
-            사진 한 장이면 충분해요
+            {t.headline}
           </h2>
-          <p className="mb-12 text-sm leading-relaxed text-[#5a7a6e] sm:text-base">
-            복잡한 설정 없이, 식물 사진 하나로 바로 시작할 수 있어요.
-            <br />
-            AI가 알아서 다 해드릴게요.
+          <p className="mb-12 whitespace-pre-line text-sm leading-relaxed text-[#5a7a6e] sm:text-base">
+            {t.subtext}
           </p>
         </motion.div>
 
-        {/* Big single step */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={inView ? { opacity: 1, scale: 1 } : {}}
@@ -42,20 +41,15 @@ export default function HowItWorksSection() {
           </span>
         </motion.div>
 
-        {/* What happens after */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.4 }}
           className="grid gap-3 sm:grid-cols-3"
         >
-          {[
-            { emoji: "🔍", text: "AI가 식물 자동 인식" },
-            { emoji: "🪴", text: "내 텃밭에 등록" },
-            { emoji: "💬", text: "대화 시작!" },
-          ].map((item, i) => (
+          {t.steps.map((item, i) => (
             <motion.div
-              key={item.text}
+              key={i}
               initial={{ opacity: 0, y: 16 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.4, delay: 0.5 + i * 0.1 }}

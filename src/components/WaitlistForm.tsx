@@ -5,11 +5,20 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { addToWaitlist } from "@/app/actions/waitlist";
 import { trackWaitlistSignup } from "@/lib/ga";
+import { getTranslations, type Locale } from "@/lib/i18n";
 
-export default function WaitlistForm({ size = "default" }: { size?: "default" | "large" }) {
+export default function WaitlistForm({
+  size = "default",
+  locale = "ko",
+}: {
+  size?: "default" | "large";
+  locale?: Locale;
+}) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const t = getTranslations(locale).waitlistForm;
+  const errors = getTranslations(locale).downloadModal.errors;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -21,9 +30,9 @@ export default function WaitlistForm({ size = "default" }: { size?: "default" | 
       setDone(true);
       setEmail("");
       trackWaitlistSignup("hero_form", "email");
-      toast.success(result.message);
+      toast.success(getTranslations(locale).downloadModal.success);
     } else {
-      toast.error(result.message);
+      toast.error(errors[result.code]);
     }
   }
 
@@ -35,7 +44,7 @@ export default function WaitlistForm({ size = "default" }: { size?: "default" | 
         className="flex items-center gap-2 rounded-full bg-[#52B788] px-6 py-3 text-white font-medium"
       >
         <span>🌱</span>
-        <span>사전예약 완료! 곧 연락드릴게요</span>
+        <span>{t.done}</span>
       </motion.div>
     );
   }
@@ -48,7 +57,7 @@ export default function WaitlistForm({ size = "default" }: { size?: "default" | 
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="이메일 주소를 입력해주세요"
+        placeholder={t.placeholder}
         required
         className={`flex-1 rounded-full border border-[#c6e8d5] bg-white px-5 text-[#1A3C34] placeholder-[#5a7a6e] outline-none focus:border-[#52B788] focus:ring-2 focus:ring-[#52B788]/20 transition-all min-h-[48px] ${isLarge ? "py-4 text-base" : "py-3 text-sm"}`}
       />
@@ -58,7 +67,7 @@ export default function WaitlistForm({ size = "default" }: { size?: "default" | 
         whileTap={{ scale: 0.97 }}
         className={`shrink-0 cursor-pointer rounded-full bg-[#52B788] font-semibold text-white transition-colors hover:bg-[#3a9e72] disabled:opacity-60 min-h-[48px] ${isLarge ? "px-8 py-4 text-base" : "px-6 py-3 text-sm"}`}
       >
-        {loading ? "등록 중..." : "사전예약하기"}
+        {loading ? t.submitLoading : t.submit}
       </motion.button>
     </form>
   );

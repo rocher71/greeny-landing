@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { openDownloadModal } from "@/components/DownloadModal";
 import { trackDownloadClick } from "@/lib/ga";
+import { getTranslations, type Locale } from "@/lib/i18n";
 
 const leaves = [
   { emoji: "🌿", x: "8%", y: "15%", size: 40, duration: 4, delay: 0 },
@@ -16,9 +17,10 @@ const leaves = [
   { emoji: "🌾", x: "40%", y: "5%", size: 22, duration: 4, delay: 2.5 },
 ];
 
-export default function HeroSection() {
+export default function HeroSection({ locale }: { locale: Locale }) {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const t = getTranslations(locale).hero;
 
   const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
@@ -30,7 +32,6 @@ export default function HeroSection() {
       id="hero"
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-20 text-center"
     >
-      {/* Animated gradient background */}
       <motion.div
         style={{ y: bgY }}
         className="pointer-events-none absolute inset-0"
@@ -40,7 +41,6 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_30%_at_10%_80%,#d1fae5,transparent)]" />
       </motion.div>
 
-      {/* Floating leaves */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         {leaves.map((leaf, i) => (
           <motion.span
@@ -60,12 +60,10 @@ export default function HeroSection() {
         ))}
       </div>
 
-      {/* Main content */}
       <motion.div
         style={{ y: contentY, opacity }}
         className="relative z-10 flex flex-col items-center"
       >
-        {/* Logo */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -82,30 +80,25 @@ export default function HeroSection() {
           <span className="text-2xl font-black tracking-tight text-[#52B788]">greeny</span>
         </motion.div>
 
-        {/* Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1 }}
-          className="mb-5 max-w-2xl text-4xl font-black leading-tight tracking-tight text-[#1A3C34] sm:text-5xl md:text-6xl"
+          className="mb-5 max-w-2xl whitespace-pre-line text-4xl font-black leading-tight tracking-tight text-[#1A3C34] sm:text-5xl md:text-6xl"
         >
-          내 식물과
-          <br />
-          대화해보세요
+          {t.headline}
         </motion.h1>
 
-        {/* Sub */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mb-10 max-w-sm text-base leading-relaxed text-[#5a7a6e] sm:max-w-md sm:text-lg"
         >
-          대화를 나눌수록 성격이 자라나는 나만의 식물 친구,{" "}
-          <span className="font-bold text-[#52B788]">그리니</span>
+          {t.sub}{" "}
+          <span className="font-bold text-[#52B788]">{t.brandName}</span>
         </motion.p>
 
-        {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -118,7 +111,7 @@ export default function HeroSection() {
             className="flex cursor-pointer items-center gap-2.5 rounded-full bg-[#1A3C34] px-8 py-4 text-base font-bold text-white shadow-lg transition hover:bg-[#0f2620]"
           >
             <span className="text-xl">🪴</span>
-            앱 다운받기
+            {t.cta}
           </motion.button>
           <div className="flex items-center gap-4 text-sm text-[#5a7a6e]">
             <span className="flex items-center gap-1">
@@ -133,14 +126,13 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
           className="mt-16 flex flex-col items-center gap-2"
         >
-          <span className="text-xs text-[#5a7a6e]">스크롤해보세요</span>
+          <span className="text-xs text-[#5a7a6e]">{t.scrollHint}</span>
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" as const }}

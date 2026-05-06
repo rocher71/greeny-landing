@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit*)",
+            "statusMessage": "i18n 번역 파일 동기화 확인 중...",
+            "command": "GIT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null); [ -z \"$GIT_ROOT\" ] && exit 0; STAGED=$(git -C \"$GIT_ROOT\" diff --cached --name-only 2>/dev/null); KO=0; EN=0; echo \"$STAGED\" | grep -q \"src/lib/i18n/ko\\.ts\" && KO=1; echo \"$STAGED\" | grep -q \"src/lib/i18n/en\\.ts\" && EN=1; if [ \"$KO\" -eq 1 ] && [ \"$EN\" -eq 0 ]; then printf '{\"continue\":false,\"stopReason\":\"⚠️ i18n 동기화 필요: ko.ts가 변경됐지만 en.ts가 스테이지되지 않았습니다. en.ts도 최신화 후 스테이지해주세요.\"}'; elif [ \"$EN\" -eq 1 ] && [ \"$KO\" -eq 0 ]; then printf '{\"continue\":false,\"stopReason\":\"⚠️ i18n 동기화 필요: en.ts가 변경됐지만 ko.ts가 스테이지되지 않았습니다. ko.ts도 최신화 후 스테이지해주세요.\"}'; fi"
+          }
+        ]
+      }
+    ]
+  }
+}
