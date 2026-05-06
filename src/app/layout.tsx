@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_KR } from "next/font/google";
 import { Toaster } from "react-hot-toast";
+import Script from "next/script";
 import DownloadModal from "@/components/DownloadModal";
 import "./globals.css";
 
@@ -32,6 +33,18 @@ export default function RootLayout({
       <body className="min-h-screen bg-background text-foreground">
         {children}
         <DownloadModal />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-QLNTJX18MD"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-QLNTJX18MD');
+          `}
+        </Script>
         <Toaster
           position="bottom-center"
           toastOptions={{
