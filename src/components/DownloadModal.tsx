@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { addToWaitlist } from "@/app/actions/waitlist";
+import { trackWaitlistSignup } from "@/lib/ga";
 
 export function openDownloadModal() {
   window.dispatchEvent(new CustomEvent("open-download-modal"));
@@ -28,20 +29,27 @@ function PlayLogo() {
   );
 }
 
+function formatPhone(input: string): string {
+  const digits = input.replace(/[^0-9]/g, "").slice(0, 11);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+  return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7)}`;
+}
+
 export default function DownloadModal() {
   const [open, setOpen] = useState(false);
   const [contactType, setContactType] = useState<"email" | "phone">("email");
   const [value, setValue] = useState("");
+  const [marketingAgreed, setMarketingAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    const handler = () => { setOpen(true); setDone(false); setValue(""); };
+    const handler = () => { setOpen(true); setDone(false); setValue(""); setMarketingAgreed(false); };
     window.addEventListener("open-download-modal", handler);
     return () => window.removeEventListener("open-download-modal", handler);
   }, []);
 
-  // ESC 키로 닫기
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); };
     window.addEventListener("keydown", onKey);
@@ -54,21 +62,26 @@ export default function DownloadModal() {
     });
   }
 
+  function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setValue(formatPhone(e.target.value));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
-    const result = await addToWaitlist(value, contactType);
+    const result = await addToWaitlist(value, contactType, marketingAgreed);
     setLoading(false);
     if (result.success) {
       setDone(true);
+      trackWaitlistSignup("download_modal", contactType);
       toast.success(result.message);
     } else {
       toast.error(result.message);
     }
   }
 
-  const placeholder = contactType === "email" ? "이메일 주소 입력" : "전화번호 입력 (010-1234-5678)";
-  const inputType = contactType === "email" ? "email" : "tel";
+  const placeholder = contactType === "email" ? "이메일 주소 입력" : "전화번호 입력";
+  const inputType = contactType === "email" ? "email" : "text";
 
   return (
     <AnimatePresence>
@@ -176,12 +189,37 @@ export default function DownloadModal() {
 
                   <input
                     type={inputType}
+                    inputMode={contactType === "phone" ? "numeric" : undefined}
                     value={value}
-                    onChange={(e) => setValue(e.target.value)}
+                    onChange={contactType === "phone" ? handlePhoneChange : (e) => setValue(e.target.value)}
                     placeholder={placeholder}
                     required
                     className="w-full rounded-xl border border-[#c6e8d5] bg-white px-4 py-3 text-[#1A3C34] placeholder-[#5a7a6e] outline-none transition focus:border-[#52B788] focus:ring-2 focus:ring-[#52B788]/20"
                   />
+
+                  {/* 마케팅 수신 동의 (선택) */}
+                  <label className="flex cursor-pointer items-start gap-2.5">
+                    <div
+                      onClick={() => setMarketingAgreed(!marketingAgreed)}
+                      className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 transition-all ${
+                        marketingAgreed
+                          ? "border-[#52B788] bg-[#52B788]"
+                          : "border-[#c6e8d5] bg-white"
+                      }`}
+                    >
+                      {marketingAgreed && (
+                        <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+                          <path d="M1 4.5l3 3L10 1" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      )}
+                    </div>
+                    <span className="text-xs leading-relaxed text-[#5a7a6e]">
+                      <span className="font-semibold text-[#1A3C34]">마케팅 알림 수신 동의</span>{" "}
+                      <span className="text-[#8395A0]">(선택)</span>
+                      <br />
+                      출시 이벤트, 새 기능 소식 등 유용한 정보를 받아볼게요.
+                    </span>
+                  </label>
 
                   <button
                     type="submit"
@@ -190,6 +228,12 @@ export default function DownloadModal() {
                   >
                     {loading ? "신청 중..." : "출시 알림 신청하기"}
                   </button>
+
+                  {/* 개인정보 안내 */}
+                  <p className="text-center text-[11px] leading-relaxed text-[#8395A0]">
+                    입력하신 연락처는 <span className="font-medium text-[#5a7a6e]">출시 알림 발송 후 즉시 폐기</span>되며,
+                    그 외 목적으로 사용되지 않아요.
+                  </p>
                 </form>
               )}
             </motion.div>

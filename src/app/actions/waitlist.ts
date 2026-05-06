@@ -5,7 +5,8 @@ import { supabaseAdmin } from "@/lib/supabase";
 
 export async function addToWaitlist(
   contact: string,
-  contactType: "email" | "phone" = "email"
+  contactType: "email" | "phone" = "email",
+  marketingAgreed = false
 ): Promise<{ success: boolean; message: string }> {
   const value = contact.trim();
 
@@ -16,7 +17,7 @@ export async function addToWaitlist(
   } else {
     const digits = value.replace(/[^0-9]/g, "");
     if (!digits || !/^01[016789]\d{7,8}$/.test(digits)) {
-      return { success: false, message: "올바른 전화번호를 입력해주세요. (예: 010-1234-5678)" };
+      return { success: false, message: "올바른 전화번호를 입력해주세요." };
     }
   }
 
@@ -29,6 +30,7 @@ export async function addToWaitlist(
     contact_type: contactType,
     ip_address: ip,
     user_agent: userAgent,
+    marketing_agreed: marketingAgreed,
   });
 
   if (error) {
