@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
@@ -65,29 +66,45 @@ export default function FeaturesSection() {
 
         {/* 3열 그리드 → 마지막 2개는 2열 중앙 정렬 */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((f, i) => (
-            <motion.div
-              key={f.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className={`rounded-3xl bg-[#F0FFF4] p-7 ${
-                // 마지막 카드가 홀수 번째일 때 lg에서 중앙 정렬
-                i === features.length - 1 && features.length % 3 !== 0
-                  ? "lg:col-start-2"
-                  : ""
-              }`}
-            >
-              <div
-                className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl text-3xl"
-                style={{ background: f.bg }}
+          {features.map((f, i) => {
+            const isGuide = f.title === "100여 종 식물 도감";
+            const card = (
+              <motion.div
+                key={f.title}
+                initial={{ opacity: 0, y: 30 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className={`rounded-3xl bg-[#F0FFF4] p-7 transition-shadow ${
+                  i === features.length - 1 && features.length % 3 !== 0
+                    ? "lg:col-start-2"
+                    : ""
+                } ${isGuide ? "cursor-pointer hover:shadow-md hover:ring-2 hover:ring-[#8b5cf6]/30" : ""}`}
               >
-                {f.emoji}
+                <div
+                  className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl text-3xl"
+                  style={{ background: f.bg }}
+                >
+                  {f.emoji}
+                </div>
+                <h3 className="mb-3 text-lg font-bold text-[#1A3C34]">{f.title}</h3>
+                <p className="text-sm leading-relaxed text-[#5a7a6e]">{f.desc}</p>
+                {isGuide && (
+                  <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-[#8b5cf6]">
+                    자세히 보기 →
+                  </span>
+                )}
+              </motion.div>
+            );
+            return isGuide ? (
+              <Link key={f.title} href="/plants" className="contents">
+                {card}
+              </Link>
+            ) : (
+              <div key={f.title} className="contents">
+                {card}
               </div>
-              <h3 className="mb-3 text-lg font-bold text-[#1A3C34]">{f.title}</h3>
-              <p className="text-sm leading-relaxed text-[#5a7a6e]">{f.desc}</p>
-            </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
