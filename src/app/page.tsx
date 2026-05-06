@@ -4,6 +4,7 @@ import ScrollShowcaseSection from "@/components/sections/ScrollShowcaseSection";
 import ChatDemoSection from "@/components/sections/ChatDemoSection";
 import GardenSection from "@/components/sections/GardenSection";
 import FeaturesSection from "@/components/sections/FeaturesSection";
+import PlantGuideSection from "@/components/sections/PlantGuideSection";
 import HowItWorksSection from "@/components/sections/HowItWorksSection";
 import CTASection from "@/components/sections/CTASection";
 import Footer from "@/components/sections/Footer";
@@ -18,6 +19,7 @@ export default function Home() {
       <ChatDemoSection />
       <GardenSection />
       <FeaturesSection />
+      <PlantGuideSection />
       <HowItWorksSection />
       <CTASection />
       <Footer />
