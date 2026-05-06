@@ -383,7 +383,7 @@ export default function PlantGuideSection({ locale }: { locale: Locale }) {
 
   const t = getTranslations(locale).plantGuide;
   const SCALE = 0.82;
-  const INITIAL_COUNT = 4;
+  const INITIAL_COUNT = 3;
   const visiblePlants = expanded ? t.plants : t.plants.slice(0, INITIAL_COUNT);
 
   return (

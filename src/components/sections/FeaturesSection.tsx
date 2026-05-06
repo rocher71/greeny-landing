@@ -27,18 +27,14 @@ export default function FeaturesSection({ locale }: { locale: Locale }) {
           </h2>
         </motion.div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2">
           {t.items.map((f, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className={`rounded-3xl bg-[#F0FFF4] p-7 ${
-                i === t.items.length - 1 && t.items.length % 3 !== 0
-                  ? "lg:col-start-2"
-                  : ""
-              }`}
+              className="rounded-3xl bg-[#F0FFF4] p-7"
             >
               <div
                 className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl text-3xl"

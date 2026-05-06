@@ -197,8 +197,7 @@ export const en: Translations = {
     headline: "What makes Greeny special",
     items: [
       { emoji: "💬", color: "#52B788", bg: "#e8f5e9", title: "Your plant speaks first", desc: "Your plant checks in on you every day. The more you talk, the more it develops its own unique personality." },
-      { emoji: "💧", color: "#3b82f6", bg: "#eff6ff", title: "Smart watering alerts", desc: "Watering schedules calculated automatically for your plant type and season. No more accidentally killing plants." },
-      { emoji: "🌤️", color: "#0ea5e9", bg: "#e0f2fe", title: "Weather-based care tips", desc: "Greeny detects your location and checks today's weather. Get custom alerts for hot, dry, or cloudy days." },
+      { emoji: "💧", color: "#3b82f6", bg: "#eff6ff", title: "AI-powered smart care", desc: "Watering schedules calculated automatically for your plant type and season. Greeny also detects your location and weather — sending tailored alerts for hot, dry, or cloudy days." },
       { emoji: "🔬", color: "#f59e0b", bg: "#fffbeb", title: "AI plant diagnosis", desc: "One photo for automatic plant ID, leaf condition analysis, and pest diagnosis — all in one." },
       { emoji: "📖", color: "#8b5cf6", bg: "#f5f3ff", title: "100+ plant encyclopedia", desc: "Monstera, Bird of Paradise, Sansevieria and 100+ more. Even beginners can grow anything with Greeny." },
     ],
