@@ -148,7 +148,7 @@ export default function ScrollShowcaseSection({ locale }: { locale: Locale }) {
                   <h2 className="mb-4 whitespace-pre-line text-3xl font-black leading-tight text-[#1A3C34] sm:text-4xl md:text-5xl">
                     {scene.title}
                   </h2>
-                  <p className="max-w-xs text-sm leading-relaxed text-[#5a7a6e] sm:text-base md:max-w-sm">
+                  <p className="max-w-xs whitespace-pre-line text-sm leading-relaxed text-[#5a7a6e] sm:text-base md:max-w-sm">
                     {scene.desc}
                   </p>
                 </div>
@@ -161,12 +161,12 @@ export default function ScrollShowcaseSection({ locale }: { locale: Locale }) {
           </motion.div>
         ))}
 
-        <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 gap-2">
+        <div className="absolute right-5 top-1/2 flex -translate-y-1/2 flex-col gap-2 md:right-8">
           {progressDots.map((dotOpacity, i) => (
             <motion.div
               key={i}
               style={{ opacity: dotOpacity }}
-              className="h-2 w-2 rounded-full bg-[#52B788]"
+              className="h-6 w-1.5 rounded-full bg-[#52B788]"
             />
           ))}
         </div>
